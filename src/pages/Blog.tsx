@@ -1,38 +1,76 @@
 import { useState } from "react";
 import { Search } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 
-const blogPosts = [
-  {
-    id: 1,
-    title: "Getting Started with Web Development",
-    category: "Development",
-    excerpt: "Learn the basics of web development and start your journey...",
-    date: "Mar 1, 2024",
-  },
-  {
-    id: 2,
-    title: "Design Principles for Modern Websites",
-    category: "Design",
-    excerpt: "Explore key design principles that make websites stand out...",
-    date: "Mar 2, 2024",
-  },
-  {
-    id: 3,
-    title: "The Future of Technology",
-    category: "Technology",
-    excerpt: "Discover upcoming trends in technology and their impact...",
-    date: "Mar 3, 2024",
-  },
-];
+// Simulated API call - in a real app, this would fetch from your backend
+const fetchBlogPosts = async () => {
+  // Simulating API delay
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  
+  return [
+    {
+      id: 1,
+      title: "Getting Started with Web Development",
+      category: "Development",
+      excerpt: "Learn the basics of web development and start your journey...",
+      date: "Mar 1, 2024",
+    },
+    {
+      id: 2,
+      title: "Design Principles for Modern Websites",
+      category: "Design",
+      excerpt: "Explore key design principles that make websites stand out...",
+      date: "Mar 2, 2024",
+    },
+    {
+      id: 3,
+      title: "The Future of Technology",
+      category: "Technology",
+      excerpt: "Discover upcoming trends in technology and their impact...",
+      date: "Mar 3, 2024",
+    },
+  ];
+};
 
 const Blog = () => {
   const [searchTerm, setSearchTerm] = useState("");
+
+  const { data: blogPosts = [], isLoading, error } = useQuery({
+    queryKey: ['blog-posts'],
+    queryFn: fetchBlogPosts,
+  });
 
   const filteredPosts = blogPosts.filter(
     (post) =>
       post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       post.category.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen py-20">
+        <div className="container mx-auto px-4">
+          <h1 className="text-4xl font-bold text-center mb-12">Blog</h1>
+          <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen py-20">
+        <div className="container mx-auto px-4">
+          <h1 className="text-4xl font-bold text-center mb-12">Blog</h1>
+          <div className="text-center text-red-500">
+            Error loading blog posts. Please try again later.
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen py-20">

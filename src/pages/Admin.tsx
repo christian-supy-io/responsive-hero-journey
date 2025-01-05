@@ -3,7 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
+import { Edit2, Save, X } from "lucide-react";
 
 const Admin = () => {
   const { toast } = useToast();
@@ -17,6 +18,12 @@ const Admin = () => {
   const [blogCategory, setBlogCategory] = useState("");
   const [blogContent, setBlogContent] = useState("");
   
+  // Edit states
+  const [editingPost, setEditingPost] = useState<number | null>(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [editCategory, setEditCategory] = useState("");
+  const [editExcerpt, setEditExcerpt] = useState("");
+
   // Simulated blog posts data
   const { data: blogPosts = [], refetch } = useQuery({
     queryKey: ['blog-posts'],
@@ -31,26 +38,25 @@ const Admin = () => {
           excerpt: "Learn the basics of web development and start your journey...",
           date: "Mar 1, 2024",
         },
-    {
-      id: 2,
-      title: "Design Principles for Modern Websites",
-      category: "Design",
-      excerpt: "Explore key design principles that make websites stand out...",
-      date: "Mar 2, 2024",
-    },
-    {
-      id: 3,
-      title: "The Future of Technology",
-      category: "Technology",
-      excerpt: "Discover upcoming trends in technology and their impact...",
-      date: "Mar 3, 2024",
-    },
+        {
+          id: 2,
+          title: "Design Principles for Modern Websites",
+          category: "Design",
+          excerpt: "Explore key design principles that make websites stand out...",
+          date: "Mar 2, 2024",
+        },
+        {
+          id: 3,
+          title: "The Future of Technology",
+          category: "Technology",
+          excerpt: "Discover upcoming trends in technology and their impact...",
+          date: "Mar 3, 2024",
+        },
       ];
     },
   });
 
   const handleSaveAbout = () => {
-    // Here you would typically make an API call to save the about content
     toast({
       title: "Success",
       description: "About section updated successfully",
@@ -58,7 +64,6 @@ const Admin = () => {
   };
 
   const handleAddBlogPost = () => {
-    // Here you would typically make an API call to add a new blog post
     toast({
       title: "Success",
       description: "Blog post added successfully",
@@ -66,6 +71,30 @@ const Admin = () => {
     setBlogTitle("");
     setBlogCategory("");
     setBlogContent("");
+    refetch();
+  };
+
+  const startEditing = (post: any) => {
+    setEditingPost(post.id);
+    setEditTitle(post.title);
+    setEditCategory(post.category);
+    setEditExcerpt(post.excerpt);
+  };
+
+  const cancelEditing = () => {
+    setEditingPost(null);
+    setEditTitle("");
+    setEditCategory("");
+    setEditExcerpt("");
+  };
+
+  const handleSaveEdit = (postId: number) => {
+    // Here you would typically make an API call to update the blog post
+    toast({
+      title: "Success",
+      description: "Blog post updated successfully",
+    });
+    setEditingPost(null);
     refetch();
   };
 
@@ -136,10 +165,51 @@ const Admin = () => {
           <h2 className="text-2xl font-semibold mb-6">Existing Blog Posts</h2>
           <div className="grid gap-6">
             {blogPosts.map((post) => (
-              <div key={post.id} className="p-4 border rounded-lg">
-                <h3 className="font-semibold">{post.title}</h3>
-                <p className="text-sm text-gray-600">{post.category}</p>
-                <p className="text-sm text-gray-500">{post.date}</p>
+              <div key={post.id} className="p-6 border rounded-lg space-y-4">
+                {editingPost === post.id ? (
+                  <div className="space-y-4">
+                    <Input
+                      value={editTitle}
+                      onChange={(e) => setEditTitle(e.target.value)}
+                      placeholder="Edit title"
+                    />
+                    <Input
+                      value={editCategory}
+                      onChange={(e) => setEditCategory(e.target.value)}
+                      placeholder="Edit category"
+                    />
+                    <Textarea
+                      value={editExcerpt}
+                      onChange={(e) => setEditExcerpt(e.target.value)}
+                      placeholder="Edit excerpt"
+                      className="min-h-[100px]"
+                    />
+                    <div className="flex gap-2">
+                      <Button onClick={() => handleSaveEdit(post.id)}>
+                        <Save className="w-4 h-4 mr-2" />
+                        Save
+                      </Button>
+                      <Button variant="outline" onClick={cancelEditing}>
+                        <X className="w-4 h-4 mr-2" />
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h3 className="font-semibold">{post.title}</h3>
+                        <p className="text-sm text-gray-600">{post.category}</p>
+                        <p className="text-sm text-gray-500">{post.date}</p>
+                        <p className="mt-2">{post.excerpt}</p>
+                      </div>
+                      <Button variant="ghost" onClick={() => startEditing(post)}>
+                        <Edit2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
           </div>

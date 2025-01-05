@@ -3,7 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { UserPlus, Edit2, Trash2, Save, X } from "lucide-react";
+import { UserPlus, Edit2, Trash2, Save, X, ImagePlus } from "lucide-react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 interface TeamMember {
   id: number;
@@ -16,9 +17,11 @@ export const TeamSection = () => {
   const { toast } = useToast();
   const [newName, setNewName] = useState("");
   const [newPosition, setNewPosition] = useState("");
+  const [newImage, setNewImage] = useState<File | null>(null);
   const [editingMember, setEditingMember] = useState<number | null>(null);
   const [editName, setEditName] = useState("");
   const [editPosition, setEditPosition] = useState("");
+  const [editImage, setEditImage] = useState<File | null>(null);
 
   const { data: teamMembers = [], refetch } = useQuery({
     queryKey: ['team-members'],
@@ -31,6 +34,18 @@ export const TeamSection = () => {
       ];
     },
   });
+
+  const handleNewImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files?.[0]) {
+      setNewImage(e.target.files[0]);
+    }
+  };
+
+  const handleEditImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files?.[0]) {
+      setEditImage(e.target.files[0]);
+    }
+  };
 
   const handleAddMember = () => {
     if (!newName || !newPosition) {
@@ -48,6 +63,7 @@ export const TeamSection = () => {
     });
     setNewName("");
     setNewPosition("");
+    setNewImage(null);
     refetch();
   };
 
@@ -55,12 +71,14 @@ export const TeamSection = () => {
     setEditingMember(member.id);
     setEditName(member.name);
     setEditPosition(member.position);
+    setEditImage(null);
   };
 
   const cancelEditing = () => {
     setEditingMember(null);
     setEditName("");
     setEditPosition("");
+    setEditImage(null);
   };
 
   const handleSaveEdit = (memberId: number) => {
@@ -95,7 +113,7 @@ export const TeamSection = () => {
       
       <div className="space-y-6 mb-8">
         <h3 className="text-lg font-medium">Add New Team Member</h3>
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-4">
           <Input
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
@@ -106,6 +124,25 @@ export const TeamSection = () => {
             onChange={(e) => setNewPosition(e.target.value)}
             placeholder="Position"
           />
+          <div>
+            <label className="block text-sm font-medium mb-2">Profile Image</label>
+            <div className="flex items-center gap-4">
+              <Input
+                type="file"
+                accept="image/*"
+                onChange={handleNewImageChange}
+                className="flex-1"
+              />
+              {newImage && (
+                <Avatar className="h-16 w-16">
+                  <AvatarImage src={URL.createObjectURL(newImage)} alt="Preview" />
+                  <AvatarFallback>
+                    <ImagePlus className="h-6 w-6" />
+                  </AvatarFallback>
+                </Avatar>
+              )}
+            </div>
+          </div>
         </div>
         <Button onClick={handleAddMember}>
           <UserPlus className="w-4 h-4 mr-2" />
@@ -128,6 +165,26 @@ export const TeamSection = () => {
                   onChange={(e) => setEditPosition(e.target.value)}
                   placeholder="Edit position"
                 />
+                <div>
+                  <label className="block text-sm font-medium mb-2">Update Profile Image</label>
+                  <div className="flex items-center gap-4">
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleEditImageChange}
+                      className="flex-1"
+                    />
+                    <Avatar className="h-16 w-16">
+                      <AvatarImage 
+                        src={editImage ? URL.createObjectURL(editImage) : member.imageUrl}
+                        alt={member.name}
+                      />
+                      <AvatarFallback>
+                        <ImagePlus className="h-6 w-6" />
+                      </AvatarFallback>
+                    </Avatar>
+                  </div>
+                </div>
                 <div className="flex gap-2">
                   <Button onClick={() => handleSaveEdit(member.id)}>
                     <Save className="w-4 h-4 mr-2" />
@@ -142,7 +199,10 @@ export const TeamSection = () => {
             ) : (
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-gray-200 rounded-full" />
+                  <Avatar className="h-16 w-16">
+                    <AvatarImage src={member.imageUrl} alt={member.name} />
+                    <AvatarFallback>{member.name[0]}</AvatarFallback>
+                  </Avatar>
                   <div>
                     <h3 className="font-semibold">{member.name}</h3>
                     <p className="text-sm text-gray-600">{member.position}</p>

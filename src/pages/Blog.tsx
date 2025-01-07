@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Search } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface BlogPost {
   id: string;
@@ -15,6 +17,7 @@ interface BlogPost {
 
 const Blog = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
 
   const { data: blogPosts = [], isLoading, error } = useQuery({
     queryKey: ['blog-posts'],
@@ -83,9 +86,10 @@ const Blog = () => {
         {/* Blog Posts Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredPosts.map((post) => (
-            <article
+            <Card
               key={post.id}
-              className="border rounded-lg overflow-hidden hover:shadow-lg transition-shadow"
+              className="cursor-pointer hover:shadow-lg transition-shadow"
+              onClick={() => navigate(`/blog/${post.id}`)}
             >
               {post.image_url ? (
                 <img 
@@ -96,7 +100,7 @@ const Blog = () => {
               ) : (
                 <div className="h-48 bg-gray-200" />
               )}
-              <div className="p-6">
+              <CardContent className="p-6">
                 <div className="text-sm text-primary font-medium mb-2">
                   {post.category}
                 </div>
@@ -105,8 +109,8 @@ const Blog = () => {
                 <div className="text-sm text-gray-500">
                   {new Date(post.created_at).toLocaleDateString()}
                 </div>
-              </div>
-            </article>
+              </CardContent>
+            </Card>
           ))}
         </div>
 

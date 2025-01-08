@@ -1,4 +1,4 @@
-import { ArrowRight, Microscope, Flask, Brain } from "lucide-react";
+import { ArrowRight, Microscope, Beaker, Brain } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const features = [
@@ -8,7 +8,7 @@ const features = [
     description: "State-of-the-art optical imaging techniques for translational research",
   },
   {
-    icon: <Flask className="w-6 h-6" />,
+    icon: <Beaker className="w-6 h-6" />,
     title: "Alternative Models",
     description: "Developing innovative translational models for better research outcomes",
   },

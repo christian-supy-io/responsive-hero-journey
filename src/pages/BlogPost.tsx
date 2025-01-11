@@ -90,7 +90,7 @@ const BlogPost = () => {
             {new Date(post.created_at).toLocaleDateString()}
           </div>
           <div 
-            className="prose prose-lg max-w-none"
+            className="prose prose-lg max-w-none break-words whitespace-pre-wrap overflow-hidden"
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
         </article>

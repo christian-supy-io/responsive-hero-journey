@@ -29,7 +29,7 @@ export const ImageForm = ({ initialData, onSuccess }: ImageFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const { register, handleSubmit, formState: { errors } } = useForm<ImageFormData>({
     defaultValues: {
-      title: initialData?.title || "",
+      title: "hero",
       description: initialData?.description || "",
     },
   });
@@ -48,7 +48,7 @@ export const ImageForm = ({ initialData, onSuccess }: ImageFormProps) => {
         const { error } = await supabase
           .from('images')
           .update({
-            title: data.title,
+            title: "hero",
             description: data.description,
             image_url: imageUrl,
             updated_at: new Date().toISOString(),
@@ -69,7 +69,7 @@ export const ImageForm = ({ initialData, onSuccess }: ImageFormProps) => {
         const { error } = await supabase
           .from('images')
           .insert({
-            title: data.title,
+            title: "hero",
             description: data.description,
             image_url: imageUrl,
           });
@@ -79,14 +79,14 @@ export const ImageForm = ({ initialData, onSuccess }: ImageFormProps) => {
 
       toast({
         title: "Success",
-        description: `Image ${initialData ? "updated" : "added"} successfully`,
+        description: `Hero image ${initialData ? "updated" : "added"} successfully`,
       });
       onSuccess();
     } catch (error) {
       console.error('Error:', error);
       toast({
         title: "Error",
-        description: `Failed to ${initialData ? "update" : "add"} image`,
+        description: `Failed to ${initialData ? "update" : "add"} hero image`,
         variant: "destructive",
       });
     } finally {
@@ -100,12 +100,10 @@ export const ImageForm = ({ initialData, onSuccess }: ImageFormProps) => {
         <Label htmlFor="title">Title</Label>
         <Input
           id="title"
-          {...register("title", { required: "Title is required" })}
-          className="mt-1"
+          value="hero"
+          disabled
+          className="mt-1 bg-gray-100"
         />
-        {errors.title && (
-          <p className="text-sm text-red-500 mt-1">{errors.title.message}</p>
-        )}
       </div>
 
       <div>
@@ -119,7 +117,7 @@ export const ImageForm = ({ initialData, onSuccess }: ImageFormProps) => {
       </div>
 
       <div>
-        <Label htmlFor="image">Image</Label>
+        <Label htmlFor="image">Hero Image</Label>
         <Input
           id="image"
           type="file"
@@ -133,14 +131,14 @@ export const ImageForm = ({ initialData, onSuccess }: ImageFormProps) => {
         <div className="mt-4">
           <img
             src={initialData.image_url}
-            alt={initialData.title}
+            alt="Current hero image"
             className="max-w-xs rounded-lg"
           />
         </div>
       )}
 
       <Button type="submit" disabled={isLoading}>
-        {isLoading ? "Saving..." : initialData ? "Update Image" : "Add Image"}
+        {isLoading ? "Saving..." : initialData ? "Update Hero Image" : "Add Hero Image"}
       </Button>
     </form>
   );

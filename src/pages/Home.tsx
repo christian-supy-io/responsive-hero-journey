@@ -1,5 +1,7 @@
 import { ArrowRight, Microscope, Beaker, Brain } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 const features = [
   {
@@ -20,25 +22,50 @@ const features = [
 ];
 
 const Home = () => {
+  const { data: heroImage } = useQuery({
+    queryKey: ['heroImage'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('images')
+        .select('*')
+        .eq('title', 'hero')
+        .single();
+      
+      if (error) throw error;
+      return data;
+    },
+  });
+
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-20">
         <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center animate-fade-up">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6">
-              Alternative Translational Models
-            </h1>
-            <p className="text-xl mb-8">
-              Advancing research through innovative approaches in nano health and optical imaging
-            </p>
-            <Link
-              to="/contact"
-              className="inline-flex items-center bg-white text-primary px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors"
-            >
-              Connect With Us
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </Link>
+          <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-8">
+            <div className="flex-1 text-center md:text-left animate-fade-up">
+              <h1 className="text-4xl md:text-6xl font-bold mb-6">
+                Alternative Translational Models
+              </h1>
+              <p className="text-xl mb-8">
+                Advancing research through innovative approaches in nano health and optical imaging
+              </p>
+              <Link
+                to="/contact"
+                className="inline-flex items-center bg-white text-primary px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors"
+              >
+                Connect With Us
+                <ArrowRight className="ml-2 w-5 h-5" />
+              </Link>
+            </div>
+            {heroImage && (
+              <div className="flex-1 animate-fade-up">
+                <img
+                  src={heroImage.image_url}
+                  alt="Hero"
+                  className="rounded-lg shadow-xl max-w-full h-auto"
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>

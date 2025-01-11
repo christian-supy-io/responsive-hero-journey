@@ -28,9 +28,9 @@ export const ImageForm = ({ initialData, onSuccess }: ImageFormProps) => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const { register, handleSubmit, formState: { errors } } = useForm<ImageFormData>({
-    defaultValues: initialData || {
-      title: "",
-      description: "",
+    defaultValues: {
+      title: initialData?.title || "",
+      description: initialData?.description || "",
     },
   });
 

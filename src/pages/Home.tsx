@@ -29,7 +29,7 @@ const Home = () => {
         .from('images')
         .select('*')
         .eq('title', 'hero')
-        .single();
+        .maybeSingle();
       
       if (error) throw error;
       return data;

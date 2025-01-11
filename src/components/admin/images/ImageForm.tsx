@@ -11,7 +11,7 @@ import { uploadImage } from "@/utils/uploadHelpers";
 interface ImageFormData {
   title: string;
   description?: string;
-  image_url?: string;
+  image_url?: FileList;
 }
 
 interface ImageFormProps {
@@ -39,7 +39,8 @@ export const ImageForm = ({ initialData, onSuccess }: ImageFormProps) => {
       setIsLoading(true);
       let imageUrl = initialData?.image_url;
 
-      if (data.image_url && data.image_url instanceof FileList && data.image_url.length > 0) {
+      // Check if a new file was uploaded
+      if (data.image_url && data.image_url.length > 0) {
         imageUrl = await uploadImage(data.image_url[0]);
       }
 

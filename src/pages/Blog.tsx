@@ -105,7 +105,9 @@ const Blog = () => {
                   {post.category}
                 </div>
                 <h2 className="text-xl font-semibold mb-2">{post.title}</h2>
-                <p className="text-gray-600 mb-4">{post.excerpt}</p>
+                <p className="text-gray-600 mb-4 break-words whitespace-pre-wrap overflow-hidden">
+                  {post.excerpt}
+                </p>
                 <div className="text-sm text-gray-500">
                   {new Date(post.created_at).toLocaleDateString()}
                 </div>

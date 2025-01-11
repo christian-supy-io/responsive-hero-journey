@@ -1,6 +1,7 @@
 import { AboutSection } from "@/components/admin/AboutSection";
 import { BlogSection } from "@/components/admin/BlogSection";
 import { TeamSection } from "@/components/admin/TeamSection";
+import { ImageSection } from "@/components/admin/ImageSection";
 
 const Admin = () => {
   return (
@@ -10,6 +11,9 @@ const Admin = () => {
         <AboutSection />
         <BlogSection />
         <TeamSection />
+        <div className="mt-16">
+          <ImageSection />
+        </div>
       </div>
     </div>
   );

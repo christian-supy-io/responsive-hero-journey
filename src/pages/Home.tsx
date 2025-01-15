@@ -98,7 +98,7 @@ const Home = () => {
           </p>
           <Link
             to="/contact"
-            className="inline-flex items-center bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-purple-700 transition-colors"
+            className="inline-flex items-center bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-teal-700 transition-colors"
           >
             Get In Touch
             <ArrowRight className="ml-2 w-5 h-5" />

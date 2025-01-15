@@ -39,7 +39,7 @@ const Home = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-20">
+      <div className="bg-gradient-to-r from-primary/80 to-primary text-white py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-8">
             <div className="flex-1 text-center md:text-left animate-fade-up">
